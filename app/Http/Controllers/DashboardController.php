@@ -21,8 +21,6 @@ class DashboardController extends Controller
             $data['applications'] = $applications->get();
             $data['jobs'] = \App\Models\Job::all();
         }
-//        @dd($data);
         return view('dashboard', $data);
     }
-    //
 }

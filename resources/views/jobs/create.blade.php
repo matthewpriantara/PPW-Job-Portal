@@ -2,14 +2,6 @@
 
 @section('content')
 <div class="container-fluid">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('jobs.index') }}"><i class="fas fa-briefcase"></i> Jobs</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Create</li>
-        </ol>
-    </nav>
-
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow">

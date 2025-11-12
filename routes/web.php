@@ -28,12 +28,17 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::post('/apply/{job_id}', [ApplicationController::class, 'store'])->name('apply')->middleware('applicant');
+    Route::resource('jobs', \App\Http\Controllers\JobController::class)->middleware('admin');
+    Route::get('/jobs/template', [\App\Http\Controllers\JobController::class, 'template'])->name('jobs.template')->middleware('admin');
+    Route::post('/jobs/import', [\App\Http\Controllers\JobController::class, 'import'])->name('jobs.import')->middleware('admin');
 
     Route::post('/applications/{id}/approve', [ApplicationController::class, 'approve'])->name('approve')->middleware('admin');
     Route::post('/applications/{id}/reject', [ApplicationController::class, 'reject'])->name('reject')->middleware('admin');
     Route::get('/export/applications', [ApplicationController::class, 'export'])->name('export.applications')->middleware('admin');
 
-    Route::resource('jobs', \App\Http\Controllers\JobController::class)->middleware('admin');
-    Route::get('/jobs/template', [\App\Http\Controllers\JobController::class, 'template'])->name('jobs.template')->middleware('admin');
-    Route::post('/jobs/import', [\App\Http\Controllers\JobController::class, 'import'])->name('jobs.import')->middleware('admin');
+    // Secure CV download route
+    Route::get('/applications/{id}/cv', [ApplicationController::class, 'downloadCv'])
+        ->name('applications.download')
+        ->middleware('auth');
+
 });

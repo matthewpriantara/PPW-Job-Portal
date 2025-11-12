@@ -2,6 +2,20 @@
     <h5>Admin Dashboard</h5>
     <p>Welcome, Admin! You have access to administrative features.</p>
 
+    {{-- Global flash messages --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     <ul class="nav nav-tabs" id="adminTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="applications-tab" data-bs-toggle="tab" data-bs-target="#applications"
@@ -43,13 +57,13 @@
                     <table class="table table-striped table-hover table-bordered">
                         <thead class="table-dark">
                         <tr>
-                            <th><i class="fas fa-user"></i> Applicant</th>
-                            <th><i class="fas fa-tag"></i> Job Title</th>
-                            <th><i class="fas fa-briefcase"></i> Position</th>
-                            <th><i class="fas fa-check-circle"></i> Status</th>
-                            <th><i class="fas fa-file-pdf"></i> CV</th>
-                            <th><i class="fas fa-calendar-alt"></i> Applied At</th>
-                            <th><i class="fas fa-cogs"></i> Actions</th>
+                            <th>Actions</th>
+                            <th>Applied At</th>
+                            <th>CV</th>
+                            <th>Status</th>
+                            <th>Position</th>
+                            <th>Job Title</th>
+                            <th>Applicant</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -72,9 +86,9 @@
                                         </span>
                                 </td>
                                 <td>
-                                    <a href="{{ asset('storage/' . $application->cv) }}" target="_blank"
+                                    <a href="{{ route('applications.download', $application->id) }}" target="_blank"
                                        class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-eye"></i> View CV
+                                        View CV
                                     </a>
                                 </td>
                                 <td>{{ $application->created_at->format('d M Y') }}</td>
@@ -86,7 +100,7 @@
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                 <button type="submit" class="btn btn-sm btn-success"
                                                         onclick="return confirm('Are you sure you want to approve this application?')">
-                                                    <i class="fas fa-check"></i> Approve
+                                                    Approve
                                                 </button>
                                             </form>
                                             <form action="{{ route('reject', $application->id) }}" method="POST"
@@ -94,7 +108,7 @@
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                 <button type="submit" class="btn btn-sm btn-danger"
                                                         onclick="return confirm('Are you sure you want to reject this application?')">
-                                                    <i class="fas fa-times"></i> Reject
+                                                    Reject
                                                 </button>
                                             </form>
                                         </div>
@@ -109,7 +123,7 @@
                 </div>
             @else
                 <div class="alert alert-info mt-3">
-                    <i class="fas fa-info-circle"></i> No applications submitted yet.
+                    No applications submitted yet.
                 </div>
             @endif
         </div>
@@ -122,14 +136,14 @@
                             <h2 class="mt-4 mb-3"> Manage Jobs</h2>
                             <div>
                                 <a href="{{ route('jobs.template') }}" class="btn btn-light btn-sm me-2">
-                                    <i class="fas fa-download"></i> Download Template
+                                    Download Template
                                 </a>
                                 <button type="button" class="btn btn-success btn-sm me-2" data-bs-toggle="modal"
                                         data-bs-target="#importModal">
-                                    <i class="fas fa-upload"></i> Import Jobs
+                                    Import Jobs
                                 </button>
                                 <a href="{{ route('jobs.create') }}" class="btn btn-warning btn-sm">
-                                    <i class="fas fa-plus"></i> Create New Job
+                                    Create New Job
                                 </a>
                             </div>
                         </div>
@@ -173,36 +187,34 @@
                                             <td>{{ $job->department ?? 'N/A' }}</td>
                                             <td>{{ $job->created_at->format('d M Y') }}</td>
                                             <td>
-                                                <a href="{{ route('jobs.show', $job) }}"
-                                                   class="btn btn-info btn-sm me-1">
-                                                    <i class="fas fa-eye"></i> View
-                                                </a>
-                                                <a href="{{ route('jobs.edit', $job) }}"
-                                                   class="btn btn-warning btn-sm me-1">
-                                                    <i class="fas fa-edit"></i> Edit
-                                                </a>
-                                                <form method="POST" action="{{ route('jobs.destroy', $job) }}"
-                                                      class="d-inline"
-                                                      onsubmit="return confirm('Are you sure you want to delete this job?')">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm">
-                                                        <i class="fas fa-trash"></i> Delete
-                                                    </button>
-                                                </form>
+                                                <div class="btn-group" role="group" aria-label="Job actions">
+                                                    <a href="{{ route('jobs.show', $job) }}" class="btn btn-info btn-sm me-1" aria-label="View">
+                                                        View
+                                                    </a>
+                                                    <a href="{{ route('jobs.edit', $job) }}" class="btn btn-warning btn-sm me-1" aria-label="Edit">
+                                                        Edit
+                                                    </a>
+                                                    <form method="POST" action="{{ route('jobs.destroy', $job) }}" class="d-inline"
+                                                          onsubmit="return confirm('Are you sure you want to delete this job?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm ms-1">
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
-                                        </tr>
+
                                     @endforeach
                                     </tbody>
                                 </table>
                             </div>
                         @else
                             <div class="alert alert-info text-center">
-                                <i class="fas fa-info-circle fa-2x mb-2"></i>
                                 <h5>No jobs created yet.</h5>
                                 <p>Get started by creating your first job!</p>
                                 <a href="{{ route('jobs.create') }}" class="btn btn-primary">
-                                    <i class="fas fa-plus"></i> Create New Job
+                                    Create New Job
                                 </a>
                             </div>
                         @endif
@@ -217,7 +229,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header bg-success text-white">
-                            <h5 class="modal-title" id="importModalLabel"><i class="fas fa-upload"></i> Import Jobs from
+                            <h5 class="modal-title" id="importModalLabel">Import Jobs from
                                 CSV</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
@@ -228,15 +240,14 @@
                             <form action="{{ route('jobs.import') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="file" class="form-label"><i class="fas fa-file-csv"></i> Select CSV File</label>
+                                    <label for="file" class="form-label">Select CSV File</label>
                                     <input type="file" class="form-control" id="file" name="file"
                                            accept=".csv,.xlsx,.xls" required>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
-                                            class="fas fa-times"></i> Cancel
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
                                     </button>
-                                    <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Import
+                                    <button type="submit" class="btn btn-success">Import
                                     </button>
                                 </div>
                             </form>
