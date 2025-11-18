@@ -7,6 +7,7 @@ use App\Models\Job;
 use App\Models\User;
 use App\Models\Application;
 use App\Notifications\NewApplicantNotification;
+use App\Notifications\ApplicationStatusNotification;
 use Illuminate\Http\Request;
 use App\Exports\ApplicationsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -48,6 +49,14 @@ class ApplicationController extends Controller
     {
         $application = Application::findOrFail($id);
         $application->update(['status' => 'approved']);
+
+        // Send notifications to applicant and admins
+        $application->user->notify(new ApplicationStatusNotification($application, 'approved'));
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new ApplicationStatusNotification($application, 'approved'));
+        }
+
         return redirect()->back()->with('success', 'Application approved successfully.');
     }
 
@@ -55,6 +64,14 @@ class ApplicationController extends Controller
     {
         $application = Application::findOrFail($id);
         $application->update(['status' => 'rejected']);
+
+        // Send notifications to applicant and admins
+        $application->user->notify(new ApplicationStatusNotification($application, 'rejected'));
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new ApplicationStatusNotification($application, 'rejected'));
+        }
+
         return redirect()->back()->with('success', 'Application rejected successfully.');
     }
 

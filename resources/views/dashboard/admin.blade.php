@@ -12,6 +12,11 @@
                     aria-controls="jobs" aria-selected="false">Manage Jobs
             </button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab"
+                    aria-controls="notifications" aria-selected="false">Notifications
+            </button>
+        </li>
     </ul>
     <div class="tab-content" id="adminTabsContent">
         <div class="tab-pane fade show active" id="applications" role="tabpanel" aria-labelledby="applications-tab">
@@ -241,6 +246,38 @@
                 </div>
             </div>
 
+        </div>
+        <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+            <h4 class="mt-4 mb-3">Notifications</h4>
+
+            @if($notifications->count() > 0)
+                <div class="list-group">
+                    @foreach($notifications as $notification)
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">New Application</h5>
+                                <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                            </div>
+                            <p class="mb-1">{{ $notification->data['message'] }}</p>
+                            <p class="mb-1">Applicant: {{ $notification->data['applicant_name'] }}</p>
+                            <small class="text-muted">
+                                @if($notification->read_at)
+                                    <em>Read</em>
+                                @else
+                                    <strong>New</strong>
+                                @endif
+                            </small>
+                            <div class="mt-2">
+                                <a href="{{ route('applications.download', $notification->data['application_id']) }}" class="btn btn-sm btn-primary">View Application</a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="alert alert-info mt-3">
+                    No notifications available.
+                </div>
+            @endif
         </div>
     </div>
 @endif

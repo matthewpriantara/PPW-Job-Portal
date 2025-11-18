@@ -27,7 +27,7 @@ class NewApplicantNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -50,7 +50,10 @@ class NewApplicantNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'message' => 'New applicant has applied for the job: ' . $this->application->jobVacancy->job->title,
+            'applicant_name' => $this->application->user->name,
+            'application_id' => $this->application->id,
+            'job_title' => $this->application->jobVacancy->job->title,
         ];
     }
 }

@@ -13,6 +13,7 @@ class DashboardController extends Controller
         if (auth()->user()->isApplicant()) {
             $data['jobVacancies'] = JobVacancy::with('job')->get();
             $data['myApplications'] = auth()->user()->applications()->with('jobVacancy.job')->get();
+            $data['notifications'] = auth()->user()->notifications;
         } elseif (auth()->user()->isAdmin()) {
             $applications = \App\Models\Application::with(['user', 'jobVacancy.job']);
             if (request('job_id')) {
@@ -20,6 +21,7 @@ class DashboardController extends Controller
             }
             $data['applications'] = $applications->get();
             $data['jobs'] = \App\Models\Job::all();
+            $data['notifications'] = auth()->user()->notifications;
         }
         return view('dashboard', $data);
     }

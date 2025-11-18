@@ -8,6 +8,9 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="applications-tab" data-bs-toggle="tab" data-bs-target="#applications" type="button" role="tab" aria-controls="applications" aria-selected="false">My Applications</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab" aria-controls="notifications" aria-selected="false">Notifications</button>
+        </li>
     </ul>
     <div class="tab-content" id="dashboardTabsContent">
         <div class="tab-pane fade show active" id="jobs" role="tabpanel" aria-labelledby="jobs-tab">
@@ -102,6 +105,33 @@
                 </div>
             @else
                 <div class="alert alert-info mt-3">You haven't applied for any jobs yet.</div>
+            @endif
+        </div>
+        <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+            <h4 class="mt-3">Notifications</h4>
+            @if(isset($notifications) && $notifications->count() > 0)
+                <div class="list-group">
+                    @foreach($notifications as $notification)
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Application Update</h5>
+                                <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                            </div>
+                            <p class="mb-1">{{ $notification->data['message'] }}</p>
+                            <small class="text-muted">
+                                @if($notification->read_at)
+                                    <em>Read</em>
+                                @else
+                                    <strong>New</strong>
+                                @endif
+                            </small>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="alert alert-info mt-3">
+                    No notifications available.
+                </div>
             @endif
         </div>
     </div>
