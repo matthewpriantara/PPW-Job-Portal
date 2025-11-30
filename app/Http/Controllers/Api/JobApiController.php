@@ -10,41 +10,37 @@ class JobApiController extends Controller
 {
     /**
      * @OA\Get(
-     *      path="/api/jobs",
-     *      operationId="indexJobs",
-     *      tags={"Jobs"},
-     *      summary="List semua lowongan dengan search & pagination",
-     *      security={{"sanctum":{}}},
-     *      @OA\Parameter(
-     *          name="keyword",
-     *          in="query",
-     *          description="Search keyword (title, company, location)",
-     *          required=false,
-     *          @OA\Schema(type="string")
-     *      ),
-     *      @OA\Parameter(
-     *          name="per_page",
-     *          in="query",
-     *          description="Items per page",
-     *          required=false,
-     *          @OA\Schema(type="integer", default=10)
-     *      ),
-     *      @OA\Parameter(
-     *          name="page",
-     *          in="query",
-     *          description="Page number",
-     *          required=false,
-     *          @OA\Schema(type="integer", default=1)
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="List jobs berhasil diambil",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="data", type="array", @OA\Items(type="object")),
-     *              @OA\Property(property="current_page", type="integer"),
-     *              @OA\Property(property="total", type="integer")
-     *          )
-     *      )
+     *     path="/api/jobs",
+     *     summary="Get all job listings",
+     *     tags={"Jobs"},
+     *     security={{"bearerAuth":{}}},
+        *     @OA\Parameter(
+        *         name="company",
+        *         in="query",
+        *         description="Filter by company name",
+        *         required=false,
+        *         @OA\Schema(type="string")
+        *     ),
+        *     @OA\Parameter(
+        *         name="location",
+        *         in="query",
+        *         description="Filter by location",
+        *         required=false,
+        *         @OA\Schema(type="string")
+        *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of jobs",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="title", type="string"),
+     *                 @OA\Property(property="company", type="string"),
+     *                 @OA\Property(property="location", type="string")
+     *             )
+     *         )
+     *     )
      * )
      */
     public function index(Request $req)
@@ -58,6 +54,16 @@ class JobApiController extends Controller
                 $s->where('title', 'like', "%$kw%")
                   ->orWhere('description', 'like', "%$kw%");
             });
+        }
+
+        // Filter by company (partial match)
+        if ($req->filled('company')) {
+            $q->where('company', 'like', "%{$req->company}%");
+        }
+
+        // Filter by location (partial match)
+        if ($req->filled('location')) {
+            $q->where('location', 'like', "%{$req->location}%");
         }
 
         // Pagination

@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Lamarin API",
-        "description": "REST API untuk sistem aplikasi lowongan kerja",
+        "title": "Job Portal API",
+        "description": "Swagger documentation for the Job Portal service",
         "version": "1.0.0"
     },
     "servers": [
@@ -15,7 +15,7 @@
         "/api/applications": {
             "get": {
                 "tags": [
-                    "Applications"
+                    "Application"
                 ],
                 "summary": "List aplikasi (admin lihat semua, user lihat milik sendiri)",
                 "operationId": "indexApplications",
@@ -44,7 +44,7 @@
         "/api/jobs/{job}/apply": {
             "post": {
                 "tags": [
-                    "Applications"
+                    "Application"
                 ],
                 "summary": "Submit aplikasi untuk lowongan",
                 "operationId": "storeApplication",
@@ -96,7 +96,7 @@
         "/api/applications/{application}/status": {
             "patch": {
                 "tags": [
-                    "Applications"
+                    "Application"
                 ],
                 "summary": "Update status aplikasi (admin only - Accepted/Rejected)",
                 "operationId": "updateApplicationStatus",
@@ -296,60 +296,52 @@
                 "tags": [
                     "Jobs"
                 ],
-                "summary": "List semua lowongan dengan search & pagination",
-                "operationId": "indexJobs",
+                "summary": "Get all job listings",
+                "operationId": "7ddb43f87de5ddc0eb46ffea0b1ce86c",
                 "parameters": [
                     {
-                        "name": "keyword",
+                        "name": "company",
                         "in": "query",
-                        "description": "Search keyword (title, company, location)",
+                        "description": "Filter by company name",
                         "required": false,
                         "schema": {
                             "type": "string"
                         }
                     },
                     {
-                        "name": "per_page",
+                        "name": "location",
                         "in": "query",
-                        "description": "Items per page",
+                        "description": "Filter by location",
                         "required": false,
                         "schema": {
-                            "type": "integer",
-                            "default": 10
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Page number",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 1
+                            "type": "string"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "List jobs berhasil diambil",
+                        "description": "List of jobs",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object"
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "title": {
+                                                "type": "string"
+                                            },
+                                            "company": {
+                                                "type": "string"
+                                            },
+                                            "location": {
+                                                "type": "string"
                                             }
                                         },
-                                        "current_page": {
-                                            "type": "integer"
-                                        },
-                                        "total": {
-                                            "type": "integer"
-                                        }
-                                    },
-                                    "type": "object"
+                                        "type": "object"
+                                    }
                                 }
                             }
                         }
@@ -357,7 +349,7 @@
                 },
                 "security": [
                     {
-                        "sanctum": []
+                        "bearerAuth": []
                     }
                 ]
             },
@@ -549,10 +541,18 @@
             }
         }
     },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
     "tags": [
         {
-            "name": "Applications",
-            "description": "Applications"
+            "name": "Application",
+            "description": "Application"
         },
         {
             "name": "Authentication",

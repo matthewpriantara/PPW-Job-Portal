@@ -10,9 +10,9 @@ use App\Http\Controllers\Controller;
 
 /**
  * @OA\Info(
- *      title="Lamarin API",
+ *      title="Job Portal API",
  *      version="1.0.0",
- *      description="REST API untuk sistem aplikasi lowongan kerja"
+ *      description="Swagger documentation for the Job Portal service"
  * )
  * @OA\Server(
  *      url="http://localhost:8000",

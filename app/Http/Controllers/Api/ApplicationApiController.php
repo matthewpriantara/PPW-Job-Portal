@@ -13,7 +13,7 @@ class ApplicationApiController extends Controller
      * @OA\Get(
      *      path="/api/applications",
      *      operationId="indexApplications",
-     *      tags={"Applications"},
+     *      tags={"Application"},
      *      summary="List aplikasi (admin lihat semua, user lihat milik sendiri)",
      *      security={{"sanctum":{}}},
      *      @OA\Response(
@@ -39,7 +39,7 @@ class ApplicationApiController extends Controller
      * @OA\Post(
      *      path="/api/jobs/{job}/apply",
      *      operationId="storeApplication",
-     *      tags={"Applications"},
+     *      tags={"Application"},
      *      summary="Submit aplikasi untuk lowongan",
      *      security={{"sanctum":{}}},
      *      @OA\Parameter(name="job", in="path", required=true, @OA\Schema(type="integer")),
@@ -76,7 +76,7 @@ class ApplicationApiController extends Controller
      * @OA\Patch(
      *      path="/api/applications/{application}/status",
      *      operationId="updateApplicationStatus",
-     *      tags={"Applications"},
+     *      tags={"Application"},
      *      summary="Update status aplikasi (admin only - Accepted/Rejected)",
      *      security={{"sanctum":{}}},
      *      @OA\Parameter(name="application", in="path", required=true, @OA\Schema(type="integer")),
